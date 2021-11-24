@@ -1,0 +1,14 @@
+{
+  "name": "anagrammatix",
+  "version": "1.0.0",
+  "author": "Deano License <deanolium@gmail.com>",
+  "license": "MIT",
+  "packageManager": "yarn@3.1.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "yarn workspaces foreach --exclude . -p -v -i run start"
+  }
+}

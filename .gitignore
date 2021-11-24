@@ -1,0 +1,15 @@
+# Yarn
+.yarn
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp*
+./**/.yarn
+./**/.yarn*
+/**/node_modules
+/**/node_modules/*
+**/node_modules
+**/node_modules/*
