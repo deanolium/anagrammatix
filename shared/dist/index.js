@@ -9,15 +9,16 @@ exports.EVENTS = {
         START_GAME: 'host:startGame',
         JOIN_GAME: 'client:joinGame',
         PLAYER_ANSWER: 'client:playerAnswer',
-        START_FIRST_ROUND: 'host:startFirstRound',
-        START_NEXT_ROUND: 'host:startNextRound',
-        PLAYER_RESTART_GAME: 'client:playerRestartGame', //
+        START_ROUND: 'host:startRound',
+        ROUND_TIMED_OUT: 'host:roundTimedOut',
+        REQUEST_RESTART_GAME: 'host:reqRestartGame', //
     },
     SERVER: {
         GAME_CREATED: 'server:gameCreated',
         PLAYER_JOINED_ROOM: 'server:playerJoinedRoom',
         BEGIN_NEW_GAME: 'server:beginNewGame',
         NEW_ROUND_DATA: 'server:newRoundData',
+        END_OF_ROUND: 'server:endOfRound',
         GAME_OVER: 'server:gameOver',
         ERROR: 'error',
     },

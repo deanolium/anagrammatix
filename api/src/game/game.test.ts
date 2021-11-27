@@ -1,5 +1,5 @@
 import { GameState, IGame } from '../types/game'
-import { IPlayers } from '../types/players'
+import { IPlayer } from '../types/players'
 import shuffle from 'lodash/shuffle'
 
 // These are used in the mock created for Game, so need to be hoisted
@@ -77,7 +77,7 @@ describe('game', () => {
     test('throws an error if player added to already started game', () => {
       const testGame = makeTestGame()
       testGame.gameState = GameState.started
-      const testPlayer: IPlayers = {
+      const testPlayer: IPlayer = {
         id: 'player1',
         name: 'BOB',
       }
@@ -92,7 +92,7 @@ describe('game', () => {
 
     test('throws an error if player is already added to game', () => {
       const testGame = makeTestGame()
-      const testPlayer: IPlayers = {
+      const testPlayer: IPlayer = {
         id: 'player1',
         name: 'BOB',
       }
@@ -108,7 +108,7 @@ describe('game', () => {
 
     test('adds the player to the game object', () => {
       const testGame = makeTestGame()
-      const testPlayer: IPlayers = {
+      const testPlayer: IPlayer = {
         id: 'player1',
         name: 'BOB',
       }
@@ -130,11 +130,11 @@ describe('game', () => {
 
     test('called with different players adds each to the game object', () => {
       const testGame = makeTestGame()
-      const testPlayer1: IPlayers = {
+      const testPlayer1: IPlayer = {
         id: 'player1',
         name: 'BOB',
       }
-      const testPlayer2: IPlayers = {
+      const testPlayer2: IPlayer = {
         id: 'player2',
         name: 'Leland',
       }
@@ -173,7 +173,7 @@ describe('game', () => {
   })
 
   describe('setupNewRound', () => {
-    test('should pick appropriate words from WordList and shuffle them', () => {
+    test('should pick appropriate words from WordList and shuffle themx', () => {
       // Note, not a great test since this makes huge assumptions about
       // the implementation going on
       const testGame = makeTestGame()
@@ -187,7 +187,6 @@ describe('game', () => {
         },
       ]
       const gameStoreSpy = mockGameGetter(testGame)
-
       const newGame = Game.setupNewRound('game')
 
       expect(shuffle).toBeCalledTimes(3)
@@ -399,6 +398,135 @@ describe('game', () => {
       expect(testGame.roundNumber).toBe(0)
       Game.scoreRound(testGame.gameID)
       expect(testGame.roundNumber).toBe(1)
+      spy.mockRestore()
+    })
+
+    test('should output the winner', () => {
+      const testGame = makeTestGame()
+      testGame.gameState = GameState.started
+      testGame.players = [
+        {
+          id: 'player1',
+          name: 'BOB',
+          score: 0,
+          answeredThisRound: false,
+        },
+        {
+          id: 'player2',
+          name: 'Leland',
+          score: 0,
+          answeredThisRound: false,
+        },
+      ]
+      testGame.words = {
+        masterWord: 'a',
+        correctWord: 'b',
+        choices: ['1', '2', '3', '4', 'b'],
+      }
+      const spy = mockGameGetter(testGame)
+
+      Game.addPlayerAnswer(testGame.gameID, 'player1', 'b')
+      Game.addPlayerAnswer(testGame.gameID, 'player2', 'b')
+
+      const { winner } = Game.scoreRound(testGame.gameID)
+      expect(winner).toBe(testGame.players[0])
+      spy.mockRestore()
+    })
+
+    test('should output the list of losers', () => {
+      const testGame = makeTestGame()
+      testGame.gameState = GameState.started
+      testGame.players = [
+        {
+          id: 'player1',
+          name: 'BOB',
+          score: 0,
+          answeredThisRound: false,
+        },
+        {
+          id: 'player2',
+          name: 'Leland',
+          score: 0,
+          answeredThisRound: false,
+        },
+      ]
+      testGame.words = {
+        masterWord: 'a',
+        correctWord: 'b',
+        choices: ['1', '2', '3', '4', 'b'],
+      }
+      const spy = mockGameGetter(testGame)
+
+      Game.addPlayerAnswer(testGame.gameID, 'player1', '1')
+      Game.addPlayerAnswer(testGame.gameID, 'player2', '2')
+
+      const { losers } = Game.scoreRound(testGame.gameID)
+      expect(losers).toStrictEqual([testGame.players[0], testGame.players[1]])
+      spy.mockRestore()
+    })
+
+    test('should output the people who time out', () => {
+      const testGame = makeTestGame()
+      testGame.gameState = GameState.started
+      testGame.players = [
+        {
+          id: 'player1',
+          name: 'BOB',
+          score: 0,
+          answeredThisRound: false,
+        },
+        {
+          id: 'player2',
+          name: 'Leland',
+          score: 0,
+          answeredThisRound: false,
+        },
+      ]
+      testGame.words = {
+        masterWord: 'a',
+        correctWord: 'b',
+        choices: ['1', '2', '3', '4', 'b'],
+      }
+      const spy = mockGameGetter(testGame)
+
+      Game.addPlayerAnswer(testGame.gameID, 'player2', '2')
+
+      const { timeOuters } = Game.scoreRound(testGame.gameID)
+      expect(timeOuters).toStrictEqual([testGame.players[0]])
+      spy.mockRestore()
+    })
+
+    test('should output if the game is over', () => {
+      const testGame = makeTestGame()
+      testGame.gameState = GameState.started
+      testGame.players = [
+        {
+          id: 'player1',
+          name: 'BOB',
+          score: 0,
+          answeredThisRound: false,
+        },
+        {
+          id: 'player2',
+          name: 'Leland',
+          score: 0,
+          answeredThisRound: false,
+        },
+      ]
+      testGame.words = {
+        masterWord: 'a',
+        correctWord: 'b',
+        choices: ['1', '2', '3', '4', 'b'],
+      }
+      const spy = mockGameGetter(testGame)
+
+      let results = Game.scoreRound(testGame.gameID)
+      expect(results.isGameOver).toBeFalsy()
+
+      testGame.roundNumber = 4
+      results = Game.scoreRound(testGame.gameID)
+      expect(results.isGameOver).toBeTruthy()
+
       spy.mockRestore()
     })
   })

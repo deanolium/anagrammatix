@@ -1,5 +1,5 @@
 import { GameState, IGame } from '../types/game'
-import { IPlayers } from '../types/players'
+import { IGamePlayer, IPlayer } from '../types/players'
 import wordList from './words'
 import shuffle from 'lodash/shuffle'
 
@@ -45,7 +45,7 @@ export const startGame = (gameID: string) => {
   return game
 }
 
-export const addPlayerToGame = (gameID: string, playerData: IPlayers) => {
+export const addPlayerToGame = (gameID: string, playerData: IPlayer) => {
   // check the player isn't already added
   const game = getGameFromID(gameID)
 
@@ -139,13 +139,19 @@ export const scoreRound = (gameID: string) => {
 
   let hadFirstWinner = false
 
+  let winner
+  let losers: IGamePlayer[] = []
+  let timeOuters: IGamePlayer[] = []
+
   game.wordQueue.forEach(({ id: playerID, word }) => {
     const thisPlayer = game.players.find(player => player.id === playerID)!
     if (!hadFirstWinner && word === game.words?.correctWord) {
       thisPlayer.score += 5
       hadFirstWinner = true
+      winner = thisPlayer
     } else if (word !== game.words?.correctWord) {
       thisPlayer.score -= 3
+      losers.push(thisPlayer)
     }
   })
 
@@ -153,10 +159,28 @@ export const scoreRound = (gameID: string) => {
   game.players.forEach(player => {
     if (!player.answeredThisRound) {
       player.score -= 3
+      timeOuters.push(player)
     }
   })
 
   game.roundNumber++
 
-  return game
+  if (game.roundNumber > 4) {
+    // game is over
+    game.gameState = GameState.complete
+  }
+
+  const playerScores = game.players.map(player => ({
+    id: player.id,
+    name: player.name,
+    score: player.score,
+  }))
+
+  return {
+    winner,
+    losers,
+    timeOuters,
+    isGameOver: game.gameState === GameState.complete,
+    playerScores,
+  }
 }

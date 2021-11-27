@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scoreRound = exports.hasAllPlayersAnswered = exports.addPlayerAnswer = exports.setupNewRound = exports.addPlayerToGame = exports.startGame = exports.createNewGame = void 0;
+exports.scoreRound = exports.hasAllPlayersAnswered = exports.addPlayerAnswer = exports.setupNewRound = exports.addPlayerToGame = exports.startGame = exports.createNewGame = exports.setGameWithID = exports.getGameFromID = void 0;
 const game_1 = require("../types/game");
 const words_1 = __importDefault(require("./words"));
 const shuffle_1 = __importDefault(require("lodash/shuffle"));
@@ -11,13 +11,18 @@ const shuffle_1 = __importDefault(require("lodash/shuffle"));
 // This should be controlled by a manager ideally...
 const AllGames = new Map();
 // Functions for dealing with the game
-const getGame = (gameID) => {
+const getGameFromID = (gameID) => {
     const game = AllGames.get(gameID);
     if (!game) {
         throw Error(`No game found with ID: ${gameID}`);
     }
     return game;
 };
+exports.getGameFromID = getGameFromID;
+const setGameWithID = (gameID, updatedGame) => {
+    AllGames.set(gameID, updatedGame);
+};
+exports.setGameWithID = setGameWithID;
 const createNewGame = (gameID, hostID) => {
     const newGame = {
         gameID,
@@ -27,12 +32,12 @@ const createNewGame = (gameID, hostID) => {
         roundNumber: 0,
         wordQueue: [],
     };
-    AllGames.set(gameID, newGame);
+    (0, exports.setGameWithID)(gameID, newGame);
     return newGame;
 };
 exports.createNewGame = createNewGame;
 const startGame = (gameID) => {
-    const game = getGame(gameID);
+    const game = (0, exports.getGameFromID)(gameID);
     game.gameState = game_1.GameState.started;
     game.roundNumber = 0;
     return game;
@@ -40,7 +45,7 @@ const startGame = (gameID) => {
 exports.startGame = startGame;
 const addPlayerToGame = (gameID, playerData) => {
     // check the player isn't already added
-    const game = getGame(gameID);
+    const game = (0, exports.getGameFromID)(gameID);
     if (game.players.some(({ id }) => id === playerData.id)) {
         throw Error(`Player ${playerData.id} [${playerData.name}] is already in game`);
     }
@@ -56,11 +61,11 @@ const addPlayerToGame = (gameID, playerData) => {
 };
 exports.addPlayerToGame = addPlayerToGame;
 const setupNewRound = (gameID) => {
-    const game = getGame(gameID);
+    const game = (0, exports.getGameFromID)(gameID);
     // reset all players for the round
     game.players.forEach(player => (player.answeredThisRound = false));
     // pick a word list to use
-    const wordSet = words_1.default[0]; // [Math.floor(Math.random() * wordList.length)]
+    const wordSet = words_1.default[Math.floor(Math.random() * words_1.default.length)];
     // select the host word
     const shuffledCorrectWords = (0, shuffle_1.default)(wordSet.realWords);
     const hostWord = shuffledCorrectWords[0];
@@ -81,14 +86,23 @@ const setupNewRound = (gameID) => {
 };
 exports.setupNewRound = setupNewRound;
 const addPlayerAnswer = (gameID, playerID, answer) => {
-    const game = getGame(gameID);
-    game.wordQueue.push({ id: playerID, word: answer });
+    const game = (0, exports.getGameFromID)(gameID);
     const player = game.players.find(player => player.id === playerID);
+    if (!player) {
+        throw Error(`Player ${playerID} not in game`);
+    }
+    if (player.answeredThisRound) {
+        throw Error(`Player ${playerID} has already answered`);
+    }
+    if (!game.words?.choices.includes(answer)) {
+        throw Error(`Player ${playerID}'s answer isn't in the choices`);
+    }
+    game.wordQueue.push({ id: playerID, word: answer });
     player.answeredThisRound = true;
 };
 exports.addPlayerAnswer = addPlayerAnswer;
 const hasAllPlayersAnswered = (gameID) => {
-    const game = getGame(gameID);
+    const game = (0, exports.getGameFromID)(gameID);
     return game.players.every(player => player.answeredThisRound);
 };
 exports.hasAllPlayersAnswered = hasAllPlayersAnswered;
@@ -96,24 +110,46 @@ const scoreRound = (gameID) => {
     // Score the round
     // 5 points for first correct answer
     // -3 points for wrong answers or if the player timed out
-    const game = getGame(gameID);
+    const game = (0, exports.getGameFromID)(gameID);
     let hadFirstWinner = false;
+    let winner;
+    let losers = [];
+    let timeOuters = [];
     game.wordQueue.forEach(({ id: playerID, word }) => {
         const thisPlayer = game.players.find(player => player.id === playerID);
         if (!hadFirstWinner && word === game.words?.correctWord) {
             thisPlayer.score += 5;
+            hadFirstWinner = true;
+            winner = thisPlayer;
         }
         else if (word !== game.words?.correctWord) {
             thisPlayer.score -= 3;
+            losers.push(thisPlayer);
         }
     });
     // punish all players who didn't answer
     game.players.forEach(player => {
         if (!player.answeredThisRound) {
             player.score -= 3;
+            timeOuters.push(player);
         }
     });
     game.roundNumber++;
-    return game;
+    if (game.roundNumber > 4) {
+        // game is over
+        game.gameState = game_1.GameState.complete;
+    }
+    const playerScores = game.players.map(player => ({
+        id: player.id,
+        name: player.name,
+        score: player.score,
+    }));
+    return {
+        winner,
+        losers,
+        timeOuters,
+        isGameOver: game.gameState === game_1.GameState.complete,
+        playerScores,
+    };
 };
 exports.scoreRound = scoreRound;

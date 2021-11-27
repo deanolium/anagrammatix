@@ -1,3 +1,5 @@
+import { IGamePlayer } from './players'
+
 export enum GameState {
   open,
   started,
@@ -8,12 +10,7 @@ export interface IGame {
   gameID: string
   hostID: string
   gameState: GameState
-  players: {
-    id: string
-    name: string
-    score: number
-    answeredThisRound: boolean
-  }[]
+  players: IGamePlayer[]
   roundNumber: number
   words?: {
     masterWord: string
