@@ -7,8 +7,8 @@
     "shared"
   ],
   "scripts": {
-    "api": "yarn workspace api start",
-    "client": "yarn workspace client start",
+    "api": "yarn workspace api",
+    "client": "yarn workspace client",
     "start": "yarn workspaces foreach -piv --exclude '.' run start"
   },
   "devDependencies": {

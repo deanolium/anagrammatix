@@ -8,7 +8,7 @@ import shuffle from 'lodash/shuffle'
 const AllGames = new Map<string, IGame>()
 
 // Functions for dealing with the game
-const getGame = (gameID: string): IGame => {
+export const getGameFromID = (gameID: string): IGame => {
   const game = AllGames.get(gameID)
 
   if (!game) {
@@ -16,6 +16,10 @@ const getGame = (gameID: string): IGame => {
   }
 
   return game
+}
+
+export const setGameWithID = (gameID: string, updatedGame: IGame) => {
+  AllGames.set(gameID, updatedGame)
 }
 
 export const createNewGame = (gameID: string, hostID: string) => {
@@ -28,13 +32,13 @@ export const createNewGame = (gameID: string, hostID: string) => {
     wordQueue: [],
   }
 
-  AllGames.set(gameID, newGame)
+  setGameWithID(gameID, newGame)
 
   return newGame
 }
 
 export const startGame = (gameID: string) => {
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
   game.gameState = GameState.started
   game.roundNumber = 0
 
@@ -43,7 +47,7 @@ export const startGame = (gameID: string) => {
 
 export const addPlayerToGame = (gameID: string, playerData: IPlayers) => {
   // check the player isn't already added
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
 
   if (game.players.some(({ id }) => id === playerData.id)) {
     throw Error(
@@ -64,13 +68,13 @@ export const addPlayerToGame = (gameID: string, playerData: IPlayers) => {
 }
 
 export const setupNewRound = (gameID: string) => {
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
 
   // reset all players for the round
   game.players.forEach(player => (player.answeredThisRound = false))
 
   // pick a word list to use
-  const wordSet = wordList[0] // [Math.floor(Math.random() * wordList.length)]
+  const wordSet = wordList[Math.floor(Math.random() * wordList.length)]
 
   // select the host word
   const shuffledCorrectWords = shuffle(wordSet.realWords)
@@ -102,15 +106,27 @@ export const addPlayerAnswer = (
   playerID: string,
   answer: string
 ) => {
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
+
+  const player = game.players.find(player => player.id === playerID)
+  if (!player) {
+    throw Error(`Player ${playerID} not in game`)
+  }
+
+  if (player.answeredThisRound) {
+    throw Error(`Player ${playerID} has already answered`)
+  }
+
+  if (!game.words?.choices.includes(answer)) {
+    throw Error(`Player ${playerID}'s answer isn't in the choices`)
+  }
 
   game.wordQueue.push({ id: playerID, word: answer })
-  const player = game.players.find(player => player.id === playerID)!
   player.answeredThisRound = true
 }
 
 export const hasAllPlayersAnswered = (gameID: string) => {
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
 
   return game.players.every(player => player.answeredThisRound)
 }
@@ -119,7 +135,7 @@ export const scoreRound = (gameID: string) => {
   // Score the round
   // 5 points for first correct answer
   // -3 points for wrong answers or if the player timed out
-  const game = getGame(gameID)
+  const game = getGameFromID(gameID)
 
   let hadFirstWinner = false
 
@@ -127,6 +143,7 @@ export const scoreRound = (gameID: string) => {
     const thisPlayer = game.players.find(player => player.id === playerID)!
     if (!hadFirstWinner && word === game.words?.correctWord) {
       thisPlayer.score += 5
+      hadFirstWinner = true
     } else if (word !== game.words?.correctWord) {
       thisPlayer.score -= 3
     }
