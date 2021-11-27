@@ -4,11 +4,13 @@
   "workspaces": [
     "api",
     "client",
+    "host",
     "shared"
   ],
   "scripts": {
     "api": "yarn workspace api",
     "client": "yarn workspace client",
+    "host": "yarn workspace host",
     "start": "yarn workspaces foreach -piv --exclude '.' run start"
   },
   "devDependencies": {

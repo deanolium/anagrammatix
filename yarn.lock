@@ -5569,6 +5569,7 @@ __metadata:
     react-is: ^17.0.2
     react-redux: ^7.2.0
     react-scripts: 4.0.3
+    shared: "workspace:^"
     socket.io-client: ^4.4.0
     styled-components: ^5.3.3
     tailwindcss: ^2.2.19
@@ -8981,6 +8982,39 @@ __metadata:
   checksum: cfa60c7684c5e1ee4efe26e167bc54b73f839ffb59d1d44a5c4bf891e26b4f5bcc666555219a98fec95508fea4eda3a79540c53c05cc79afc1f66f9a238f4d9e
   languageName: node
   linkType: hard
+
+"host@workspace:host":
+  version: 0.0.0-use.local
+  resolution: "host@workspace:host"
+  dependencies:
+    "@reduxjs/toolkit": ^1.5.1
+    "@testing-library/dom": ^8.11.1
+    "@testing-library/jest-dom": ^4.2.4
+    "@testing-library/react": ^9.3.2
+    "@testing-library/user-event": ^7.1.2
+    "@types/jest": ^24.0.0
+    "@types/node": ^12.0.0
+    "@types/react": ^16.9.0
+    "@types/react-dom": ^16.9.0
+    "@types/react-is": ^17
+    "@types/react-redux": ^7.1.7
+    "@types/socket.io-client": ^3.0.0
+    autoprefixer: ^10.4.0
+    eslint-config-react-app: ^6.0.0
+    postcss: ^8.4.3
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    react-is: ^17.0.2
+    react-redux: ^7.2.0
+    react-scripts: 4.0.3
+    shared: "workspace:^"
+    socket.io-client: ^4.4.0
+    styled-components: ^5.3.3
+    tailwindcss: ^2.2.19
+    twin.macro: ^2.8.1
+    typescript: ~4.1.5
+  languageName: unknown
+  linkType: soft
 
 "hosted-git-info@npm:^2.1.4":
   version: 2.8.9
