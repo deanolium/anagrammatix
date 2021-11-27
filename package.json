@@ -1,14 +1,23 @@
 {
   "name": "anagrammatix",
-  "version": "1.0.0",
-  "author": "Deano License <deanolium@gmail.com>",
-  "license": "MIT",
-  "packageManager": "yarn@3.1.0",
+  "packageManager": "yarn@3.1.1",
   "workspaces": [
+    "api",
     "client",
-    "server"
+    "shared"
   ],
   "scripts": {
-    "start": "yarn workspaces foreach --exclude . -p -v -i run start"
+    "api": "yarn workspace api start",
+    "client": "yarn workspace client start",
+    "start": "yarn workspaces foreach -piv --exclude '.' run start"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/prettier": "^2",
+    "prettier": "^2.5.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }
