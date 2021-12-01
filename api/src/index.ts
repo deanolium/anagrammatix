@@ -14,13 +14,27 @@ app.use(
 )
 
 const server = http.createServer(app)
-const io = new socketIO.Server(server)
+const io = new socketIO.Server(server, {
+  cors: {
+    origin: '*',
+  },
+})
 
 io.on(EVENTS.CLIENT.CONNECT, socket => {
   console.log(`Socket ${socket.id} connected`)
+  if (socket.handshake.query.role) {
+    socket.data.role = socket.handshake.query.role
+  } else {
+    socket.data.role = 'client'
+  }
 
-  hostHandler(io, socket)
-  clientHandler(io, socket)
+  if (socket.data.role === 'host') {
+    hostHandler(io, socket)
+  }
+
+  if (socket.data.role === 'client') {
+    clientHandler(io, socket)
+  }
 })
 
 const port = 3001

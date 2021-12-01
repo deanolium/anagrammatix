@@ -52,7 +52,7 @@ const clientHandler = (
       )
 
       if (hasAllPlayersAnswered(gameID)) {
-        let results = scoreRound(gameID)
+        const results = scoreRound(gameID)
 
         if (results.isGameOver) {
           // game is over - so sort out the winners and all that

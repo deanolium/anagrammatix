@@ -54,6 +54,7 @@ describe('game', () => {
     beforeAll(() => {
         gameSetterMock = jest
             .spyOn(Game, 'setGameWithID')
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             .mockImplementation(() => { });
         jest.clearAllMocks();
     });

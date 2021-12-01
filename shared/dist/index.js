@@ -1,6 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EVENTS = void 0;
+exports.EVENTS = exports.socketIOMiddleware = void 0;
+var socketIOMiddleware_1 = require("./middlewares/socketIOMiddleware");
+Object.defineProperty(exports, "socketIOMiddleware", { enumerable: true, get: function () { return __importDefault(socketIOMiddleware_1).default; } });
 exports.EVENTS = {
     CLIENT: {
         CONNECT: 'connection',
@@ -11,7 +16,7 @@ exports.EVENTS = {
         PLAYER_ANSWER: 'client:playerAnswer',
         START_ROUND: 'host:startRound',
         ROUND_TIMED_OUT: 'host:roundTimedOut',
-        REQUEST_RESTART_GAME: 'host:reqRestartGame', //
+        REQUEST_RESTART_GAME: 'host:reqRestartGame',
     },
     SERVER: {
         GAME_CREATED: 'server:gameCreated',

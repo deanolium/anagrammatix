@@ -1,3 +1,5 @@
+export { default as socketIOMiddleware } from './middlewares/socketIOMiddleware';
+export { ISocketConfig, IListener } from 'types';
 export declare const EVENTS: {
     CLIENT: {
         CONNECT: string;

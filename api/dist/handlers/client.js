@@ -29,7 +29,7 @@ const clientHandler = (io, socket) => {
             socket.send(`Answer received`);
             console.log(`Player ${socket.id} [${socket.data.name}] provided an answer`);
             if ((0, game_1.hasAllPlayersAnswered)(gameID)) {
-                let results = (0, game_1.scoreRound)(gameID);
+                const results = (0, game_1.scoreRound)(gameID);
                 if (results.isGameOver) {
                     // game is over - so sort out the winners and all that
                     io.to(gameID).emit(shared_1.EVENTS.SERVER.GAME_OVER, results);

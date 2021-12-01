@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scoreRound = exports.hasAllPlayersAnswered = exports.addPlayerAnswer = exports.setupNewRound = exports.addPlayerToGame = exports.startGame = exports.createNewGame = exports.setGameWithID = exports.getGameFromID = void 0;
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const game_1 = require("../types/game");
 const words_1 = __importDefault(require("./words"));
 const shuffle_1 = __importDefault(require("lodash/shuffle"));
@@ -82,11 +83,15 @@ const setupNewRound = (gameID) => {
         choices: wordsToShow,
     };
     game.wordQueue = [];
+    game.gameState = game_1.GameState.inRound;
     return game;
 };
 exports.setupNewRound = setupNewRound;
 const addPlayerAnswer = (gameID, playerID, answer) => {
     const game = (0, exports.getGameFromID)(gameID);
+    if (game.gameState !== game_1.GameState.inRound) {
+        throw Error(`Answer ignored as not in round`);
+    }
     const player = game.players.find(player => player.id === playerID);
     if (!player) {
         throw Error(`Player ${playerID} not in game`);
@@ -111,10 +116,11 @@ const scoreRound = (gameID) => {
     // 5 points for first correct answer
     // -3 points for wrong answers or if the player timed out
     const game = (0, exports.getGameFromID)(gameID);
+    game.gameState = game_1.GameState.scoring;
     let hadFirstWinner = false;
     let winner;
-    let losers = [];
-    let timeOuters = [];
+    const losers = [];
+    const timeOuters = [];
     game.wordQueue.forEach(({ id: playerID, word }) => {
         const thisPlayer = game.players.find(player => player.id === playerID);
         if (!hadFirstWinner && word === game.words?.correctWord) {
@@ -150,6 +156,7 @@ const scoreRound = (gameID) => {
         timeOuters,
         isGameOver: game.gameState === game_1.GameState.complete,
         playerScores,
+        correctWord: game.words?.correctWord,
     };
 };
 exports.scoreRound = scoreRound;

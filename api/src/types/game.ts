@@ -3,6 +3,8 @@ import { IGamePlayer } from './players'
 export enum GameState {
   open,
   started,
+  inRound,
+  scoring,
   complete,
 }
 

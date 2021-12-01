@@ -2,10 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const wordList = [
     {
-        realWords: ['a', 'b'],
-        decoyWords: ['1', '2', '3', '4', '5'],
-    },
-    {
         realWords: ['sale', 'seal', 'ales', 'leas'],
         decoyWords: [
             'lead',

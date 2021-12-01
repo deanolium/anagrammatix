@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { GameState, IGame } from '../types/game'
 import { IGamePlayer, IPlayer } from '../types/players'
 import wordList from './words'
@@ -98,6 +99,8 @@ export const setupNewRound = (gameID: string) => {
 
   game.wordQueue = []
 
+  game.gameState = GameState.inRound
+
   return game
 }
 
@@ -107,6 +110,10 @@ export const addPlayerAnswer = (
   answer: string
 ) => {
   const game = getGameFromID(gameID)
+
+  if (game.gameState !== GameState.inRound) {
+    throw Error(`Answer ignored as not in round`)
+  }
 
   const player = game.players.find(player => player.id === playerID)
   if (!player) {
@@ -137,11 +144,13 @@ export const scoreRound = (gameID: string) => {
   // -3 points for wrong answers or if the player timed out
   const game = getGameFromID(gameID)
 
+  game.gameState = GameState.scoring
+
   let hadFirstWinner = false
 
   let winner
-  let losers: IGamePlayer[] = []
-  let timeOuters: IGamePlayer[] = []
+  const losers: IGamePlayer[] = []
+  const timeOuters: IGamePlayer[] = []
 
   game.wordQueue.forEach(({ id: playerID, word }) => {
     const thisPlayer = game.players.find(player => player.id === playerID)!
@@ -182,5 +191,6 @@ export const scoreRound = (gameID: string) => {
     timeOuters,
     isGameOver: game.gameState === GameState.complete,
     playerScores,
+    correctWord: game.words?.correctWord,
   }
 }

@@ -34,11 +34,25 @@ app.use((0, cors_1.default)({
     origin: '*',
 }));
 const server = http_1.default.createServer(app);
-const io = new socketIO.Server(server);
+const io = new socketIO.Server(server, {
+    cors: {
+        origin: '*',
+    },
+});
 io.on(shared_1.EVENTS.CLIENT.CONNECT, socket => {
     console.log(`Socket ${socket.id} connected`);
-    (0, host_1.default)(io, socket);
-    (0, client_1.default)(io, socket);
+    if (socket.handshake.query.role) {
+        socket.data.role = socket.handshake.query.role;
+    }
+    else {
+        socket.data.role = 'client';
+    }
+    if (socket.data.role === 'host') {
+        (0, host_1.default)(io, socket);
+    }
+    if (socket.data.role === 'client') {
+        (0, client_1.default)(io, socket);
+    }
 });
 const port = 3001;
 server.listen(port, () => {
