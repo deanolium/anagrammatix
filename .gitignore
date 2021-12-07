@@ -1,5 +1,4 @@
 # Yarn
-.yarn
 .yarn/*
 !.yarn/cache
 !.yarn/releases
@@ -7,8 +6,12 @@
 !.yarn/sdks
 !.yarn/versions
 .pnp*
-./**/.yarn
 ./**/.yarn*
+!./**/.yarn/cache
+!./**/.yarn/releases
+!./**/.yarn/plugins
+!./**/.yarn/sdks
+!./**/.yarn/versions
 /**/node_modules
 /**/node_modules/*
 **/node_modules
