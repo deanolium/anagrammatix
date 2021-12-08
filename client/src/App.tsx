@@ -1,7 +1,7 @@
-import React from "react";
-import logo from "./logo.svg";
-import "twin.macro";
-import "styled-components/macro";
+import React from 'react'
+import logo from './logo.svg'
+import 'twin.macro'
+import 'styled-components/macro'
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         </p>
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

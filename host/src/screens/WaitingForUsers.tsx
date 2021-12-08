@@ -7,6 +7,7 @@ import {
   selectGameID,
   selectPlayers,
 } from '../redux/selectors/gameStoreSelectors'
+import Container from '../components/Container'
 
 const WaitingForUsers: FC = () => {
   const dispatch = useDispatch()
@@ -20,7 +21,7 @@ const WaitingForUsers: FC = () => {
   }
 
   return (
-    <div tw="flex flex-col items-center bg-white w-max mx-auto p-8 rounded-2xl shadow-lg min-h-[400px]">
+    <Container tw="min-h-[400px]">
       <h1 tw="text-indigo-800 font-bold text-2xl mb-2">
         Connect to Game: {gameID}
       </h1>
@@ -51,7 +52,7 @@ const WaitingForUsers: FC = () => {
           Start Game
         </button>
       )}
-    </div>
+    </Container>
   )
 }
 

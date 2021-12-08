@@ -1,13 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { EVENTS, socketIOMiddleware } from 'shared'
 import gameStoreReducer, {
-  createdGame,
-  endOfGameResults,
   endOfRound,
   gameStarted,
   handleError,
-  playerJoined,
+  joinedGame,
   roundStarted,
+  showEndOfGameResults,
 } from './slices/gameStore'
 
 export const rootReducers = combineReducers({
@@ -22,12 +21,8 @@ export const rootStore = configureStore({
       role: 'host',
       listeners: [
         {
-          message: EVENTS.SERVER.GAME_CREATED,
-          action: createdGame,
-        },
-        {
           message: EVENTS.SERVER.PLAYER_JOINED_ROOM,
-          action: playerJoined,
+          action: joinedGame,
         },
         {
           message: EVENTS.SERVER.BEGIN_NEW_GAME,
@@ -43,20 +38,14 @@ export const rootStore = configureStore({
         },
         {
           message: EVENTS.SERVER.GAME_OVER,
-          action: endOfGameResults,
+          action: showEndOfGameResults,
         },
         {
           message: EVENTS.SERVER.ERROR,
           action: handleError,
         },
       ],
-      subscribers: [
-        EVENTS.CLIENT.CREATE_GAME,
-        EVENTS.CLIENT.REQUEST_RESTART_GAME,
-        EVENTS.CLIENT.START_GAME,
-        EVENTS.CLIENT.START_ROUND,
-        EVENTS.CLIENT.ROUND_TIMED_OUT,
-      ],
+      subscribers: [EVENTS.CLIENT.JOIN_GAME, EVENTS.CLIENT.PLAYER_ANSWER],
     }),
   ],
 })

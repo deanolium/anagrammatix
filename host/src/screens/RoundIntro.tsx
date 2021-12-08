@@ -4,6 +4,7 @@ import { EVENTS } from 'shared'
 import { selectRoundInfo } from '../redux/selectors/gameStoreSelectors'
 import 'twin.macro'
 import 'styled-components/macro'
+import Container from '../components/Container'
 
 const RoundIntro: FC = () => {
   const dispatch = useDispatch()
@@ -32,12 +33,12 @@ const RoundIntro: FC = () => {
   }
 
   return (
-    <div tw="flex flex-col items-center bg-white w-max mx-auto p-8 rounded-2xl shadow-lg">
+    <Container>
       <h1 tw="font-bold text-2xl mb-4">Round {roundNumber}/5</h1>
       <h2 tw="text-7xl font-extrabold text-red-800 transition-all animate-nupulse">
         {showCount ? count : <span>&nbsp;</span>}
       </h2>
-    </div>
+    </Container>
   )
 }
 

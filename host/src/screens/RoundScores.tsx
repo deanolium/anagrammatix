@@ -4,6 +4,7 @@ import { selectRoundResults } from '../redux/selectors/gameStoreSelectors'
 import 'twin.macro'
 import 'styled-components/macro'
 import { showRoundIntro } from '../redux/slices/gameStore'
+import Container from '../components/Container'
 
 const waitLength = 4000
 
@@ -63,7 +64,7 @@ const RoundScores: FC = () => {
 
   const thingToDisplay = displayArr[displayIndex]
   return (
-    <div tw="container flex flex-col items-center bg-white w-max mx-auto pt-8 rounded-2xl shadow-lg min-h-[360px]">
+    <Container tw="min-h-[360px]">
       <header tw="relative mb-6 w-full flex justify-center px-16">
         <h1 tw="font-bold text-4xl px-2">End of Round</h1>
       </header>
@@ -81,7 +82,7 @@ const RoundScores: FC = () => {
           </ul>
         )}
       </section>
-    </div>
+    </Container>
   )
 }
 

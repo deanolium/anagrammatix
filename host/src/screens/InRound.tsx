@@ -4,6 +4,7 @@ import { EVENTS } from 'shared'
 import { selectRoundInfo } from '../redux/selectors/gameStoreSelectors'
 import 'twin.macro'
 import 'styled-components/macro'
+import Container from '../components/Container'
 
 const InRound: FC = () => {
   const dispatch = useDispatch()
@@ -36,7 +37,7 @@ const InRound: FC = () => {
   }
 
   return (
-    <div tw="container flex flex-col items-center bg-white w-max mx-auto pt-8 rounded-2xl shadow-lg">
+    <Container>
       <header tw="relative mb-6 w-full flex justify-center px-16">
         <hr tw="absolute top-1/2 w-full " />
         <h1 tw="relative font-bold text-4xl px-2 bg-white">
@@ -52,7 +53,7 @@ const InRound: FC = () => {
           Time remaining: {timeRemaining} secs
         </p>
       </section>
-    </div>
+    </Container>
   )
 }
 

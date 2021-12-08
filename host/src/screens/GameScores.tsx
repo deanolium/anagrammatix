@@ -5,6 +5,7 @@ import { RootStateType } from '../redux'
 import { selectGameScores } from '../redux/selectors/gameStoreSelectors'
 import 'twin.macro'
 import 'styled-components/macro'
+import Container from '../components/Container'
 
 const waitLength = 4000
 
@@ -65,7 +66,7 @@ const GameScores: FC = () => {
   }
 
   return (
-    <div tw="container flex flex-col items-center bg-white w-max mx-auto pt-8 rounded-2xl shadow-lg min-h-[360px] pb-4">
+    <Container tw="min-h-[360px] pb-4">
       <header tw="relative mb-6 w-[600px] flex justify-center px-16">
         <h2 tw="text-2xl font-bold">{thingToDisplay.message}</h2>
       </header>
@@ -86,7 +87,7 @@ const GameScores: FC = () => {
       >
         New Game
       </button>
-    </div>
+    </Container>
   )
 }
 

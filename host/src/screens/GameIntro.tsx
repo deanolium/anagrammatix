@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { showRoundIntro } from '../redux/slices/gameStore'
 import 'twin.macro'
 import 'styled-components/macro'
+import Container from '../components/Container'
 
 const GameIntro: FC = () => {
   const dispatch = useDispatch()
@@ -25,12 +26,12 @@ const GameIntro: FC = () => {
   }
 
   return (
-    <div tw="flex flex-col items-center bg-white w-max mx-auto p-8 rounded-2xl shadow-lg">
+    <Container>
       <h1 tw="font-bold text-2xl mb-4">Get Ready!</h1>
       <h2 tw="text-7xl font-extrabold text-red-800 transition-all animate-nupulse ">
         {count}
       </h2>
-    </div>
+    </Container>
   )
 }
 

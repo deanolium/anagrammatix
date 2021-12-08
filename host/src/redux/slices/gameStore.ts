@@ -70,7 +70,8 @@ const slice = createSlice({
     setEndOfGame(state) {
       state.gameState = GameState.GAME_OVER
     },
-    handleError(_, action: PayloadAction<string>) {
+    handleError(state, action: PayloadAction<string>) {
+      state.message = `ERROR: ${action.payload}`
       console.error(action.payload)
     },
   },
