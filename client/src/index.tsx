@@ -4,11 +4,15 @@ import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { GlobalStyles } from 'twin.macro'
+import { Provider } from 'react-redux'
+import { rootStore } from './redux'
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyles />
-    <App />
+    <Provider store={rootStore}>
+      <GlobalStyles />
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )
